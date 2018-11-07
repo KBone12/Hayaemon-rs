@@ -1,3 +1,6 @@
+extern crate pancurses;
+
 fn main() {
-    println!("Hello, world!");
+    let _ = pancurses::initscr();
+    pancurses::endwin();
 }

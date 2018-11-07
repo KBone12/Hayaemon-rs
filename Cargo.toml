@@ -4,3 +4,4 @@ version = "0.0.0"
 authors = ["kbone <kbonehobby@gmail.com>"]
 
 [dependencies]
+pancurses = "0.16.0"
