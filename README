@@ -1,0 +1,5 @@
+# Hayaemon-rs
+## About this
+[聞々ハヤえもん for Windows](https://github.com/ryotayama/Hayaemon)のCUI版をRustで作ろうとしています。
+## License
+[GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
