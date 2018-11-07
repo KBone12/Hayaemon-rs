@@ -3,21 +3,19 @@ use std::os::raw::c_void;
 #[cfg(unix)] use std::os::unix::ffi::OsStrExt;
 #[cfg(windows)] use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
-use std::ptr;
 use std::thread;
 use std::time::Duration;
 
 mod bass;
+use bass::{Bass, Mode};
 use bass::device::Device;
 
 #[link(name = "bass")]
 extern "C" {
-    fn BASS_Init(device: i32, frequency: u32, flags: u32, window: *mut c_void, class_id: *mut c_void) -> bool;
     fn BASS_StreamCreateFile(from_memory: bool, location: *mut c_void, offset: u64, length: u64, flags: u32) -> u32;
     fn BASS_ChannelPlay(handle: u32, restart: bool) -> bool;
     fn BASS_ChannelIsActive(handle: u32) -> u32;
     fn BASS_StreamFree(handle: u32);
-    fn BASS_Free() -> bool;
 }
 
 fn main() {
@@ -32,9 +30,9 @@ fn main() {
     io::stdin().read_line(&mut tmp).ok();
     device_number = tmp.trim().parse().ok().unwrap();
 
-    unsafe {
-        BASS_Init(device_number as i32, 44100, 0, ptr::null_mut(), ptr::null_mut());
+    let _bass = Bass::new(Device::new(device_number).unwrap_or(Device::new(0).unwrap()), 44100, &vec![Mode::None]);
 
+    unsafe {
         print!("Put the path to the sound file > ");
         io::stdout().flush().ok();
         tmp.clear();
@@ -50,6 +48,5 @@ fn main() {
         }
 
         BASS_StreamFree(stream_handle);
-        BASS_Free();
     }
 }

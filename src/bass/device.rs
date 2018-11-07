@@ -77,6 +77,10 @@ impl Device {
             Some(Self { id, info, })
         }
     }
+
+    pub fn get_id(&self) -> u32 {
+        self.id
+    }
 }
 
 impl Display for Device {
