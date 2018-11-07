@@ -3,17 +3,17 @@ use std::fmt::{self, Display, Formatter};
 use std::os::raw::c_char;
 use std::ptr;
 
-#[link(name = "bass")]
-extern "C" {
-    fn BASS_GetDeviceInfo(device: u32, info: *mut DeviceInfo) -> bool;
-}
-
 #[repr(C)]
 #[derive(Debug)]
 struct DeviceInfo {
     name: *mut c_char,
     driver: *mut c_char,
     flags: u32,
+}
+
+#[link(name = "bass")]
+extern "C" {
+    fn BASS_GetDeviceInfo(device: u32, info: *mut DeviceInfo) -> bool;
 }
 
 #[derive(Debug)]

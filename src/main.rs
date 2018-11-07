@@ -8,7 +8,7 @@ use std::thread;
 use std::time::Duration;
 
 mod bass;
-use bass::Device;
+use bass::device::Device;
 
 #[link(name = "bass")]
 extern "C" {
