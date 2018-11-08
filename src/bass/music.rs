@@ -7,6 +7,8 @@ use std::path::Path;
 extern "C" {
     fn BASS_StreamCreateFile(from_memory: bool, location: *mut c_void, offset: u64, length: u64, flags: u32) -> u32;
     fn BASS_ChannelPlay(handle: u32, restart: bool) -> bool;
+    fn BASS_ChannelPause(handle: u32) -> bool;
+    fn BASS_ChannelStop(handle: u32) -> bool;
     fn BASS_ChannelIsActive(handle: u32) -> u32;
     fn BASS_StreamFree(handle: u32);
 }
@@ -30,6 +32,14 @@ impl Music {
         unsafe { BASS_ChannelPlay(self.handle, false); }
     }
 
+    pub fn pause(&self) {
+        unsafe { BASS_ChannelPause(self.handle); }
+    }
+
+    pub fn stop(&self) {
+        unsafe { BASS_ChannelStop(self.handle); }
+    }
+
     pub fn is_active(&self) -> bool {
         unsafe { BASS_ChannelIsActive(self.handle) != 0 }
     }
@@ -37,6 +47,7 @@ impl Music {
 
 impl Drop for Music {
     fn drop(&mut self) {
+        if self.is_active() { self.stop(); }
         unsafe { BASS_StreamFree(self.handle); }
     }
 }
