@@ -2,8 +2,7 @@ extern crate pancurses;
 
 use std::io::{self, Write};
 use std::path::Path;
-use std::thread;
-use std::time::Duration;
+use std::rc::Rc;
 
 mod bass;
 use bass::{Bass, Mode};
@@ -30,13 +29,9 @@ fn main() {
     io::stdout().flush().ok();
     tmp.clear();
     io::stdin().read_line(&mut tmp).ok();
-    let music = Music::from_file(Path::new(&tmp.trim()));
+    let music = Rc::new(Music::from_file(Path::new(&tmp.trim())));
 
-    music.play();
-    while music.is_active() {
-        thread::sleep(Duration::from_millis(10));
-    }
-
-    let window = Window::new();
+    let mut window = Window::new();
+    window.set_music(music);
     window.show();
 }

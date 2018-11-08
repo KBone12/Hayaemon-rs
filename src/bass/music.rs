@@ -13,6 +13,14 @@ extern "C" {
     fn BASS_StreamFree(handle: u32);
 }
 
+#[derive(PartialEq)]
+pub enum State {
+    Stopped,
+    Playing,
+    Stalled,
+    Paused,
+}
+
 pub struct Music {
     handle: u32,
 }
@@ -40,14 +48,20 @@ impl Music {
         unsafe { BASS_ChannelStop(self.handle); }
     }
 
-    pub fn is_active(&self) -> bool {
-        unsafe { BASS_ChannelIsActive(self.handle) != 0 }
+    pub fn get_state(&self) -> State {
+        match unsafe { BASS_ChannelIsActive(self.handle) } {
+            0 => State::Stopped,
+            1 => State::Playing,
+            2 => State::Stalled,
+            3 => State::Paused,
+            _ => unreachable!(),
+        }
     }
 }
 
 impl Drop for Music {
     fn drop(&mut self) {
-        if self.is_active() { self.stop(); }
+        if self.get_state() == State::Playing || self.get_state() == State::Paused { self.stop(); }
         unsafe { BASS_StreamFree(self.handle); }
     }
 }
