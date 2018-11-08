@@ -1,3 +1,9 @@
+extern crate pancurses;
+
+mod window;
+use window::Window;
+
 fn main() {
-    println!("Hello, world!");
+    let window = Window::new();
+    window.show();
 }
