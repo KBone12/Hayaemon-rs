@@ -43,7 +43,7 @@ impl Window {
                             if music.get_state() == State::Playing {
                                 music.pause();
                             } else {
-                                music.play();
+                                music.play(true);
                             }
                         }
                     },

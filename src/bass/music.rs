@@ -36,8 +36,8 @@ impl Music {
         }
     }
 
-    pub fn play(&self) {
-        unsafe { BASS_ChannelPlay(self.handle, false); }
+    pub fn play(&self, from_head: bool) {
+        unsafe { BASS_ChannelPlay(self.handle, from_head); }
     }
 
     pub fn pause(&self) {
