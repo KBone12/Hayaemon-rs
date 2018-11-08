@@ -30,7 +30,7 @@ impl Window {
         let mut should_close = false;
         while !should_close {
             let (height, width) = self.window.get_max_yx();
-            let text = "Play Pane";
+            let text = "Press the space key to toggle the music playing/stopped.";
 
             self.window.mvaddstr(height / 2, (width - text.len() as i32) / 2, text);
             self.window.refresh();
