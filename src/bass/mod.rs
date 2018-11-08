@@ -3,6 +3,8 @@ use std::ptr;
 
 pub mod device;
 use self::device::Device;
+pub mod music;
+
 mod error;
 use self::error::ErrorType;
 
