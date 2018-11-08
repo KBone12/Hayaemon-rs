@@ -13,6 +13,7 @@ extern "C" {
     fn BASS_Free() -> bool;
 }
 
+#[allow(dead_code)]
 pub enum Mode {
     None,
     Sound8Bits,
