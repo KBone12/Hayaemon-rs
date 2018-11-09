@@ -8,8 +8,8 @@ mod bass;
 use bass::{Bass, Mode};
 use bass::device::Device;
 use bass::music::Music;
-mod window;
-use window::Window;
+mod curses;
+use curses::window::Window;
 
 fn main() {
     let mut device_number = 1;
