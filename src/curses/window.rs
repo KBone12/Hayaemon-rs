@@ -2,6 +2,7 @@ use std::rc::Rc;
 
 use pancurses::{self, Input};
 
+use curses::file_explorer::FileExplorer;
 use bass::music::{Music, State};
 
 pub struct Window {
@@ -47,6 +48,12 @@ impl Window {
                             }
                         }
                     },
+                    Input::Character('F') => {
+                        self.window.mv(0, 0);
+                        self.window.clrtoeol();
+                        let path = FileExplorer::new(&self.window).get_file();
+                        self.window.mvaddstr(0, 0, path.to_string_lossy());
+                    }
                     _ => {}
                 }
             }
