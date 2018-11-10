@@ -27,13 +27,19 @@ impl Window {
         }
     }
 
-    pub fn show(&self) {
+    pub fn show(&mut self) {
         let mut should_close = false;
         while !should_close {
             let (height, width) = self.window.get_max_yx();
-            let text = "Press the space key to toggle the music playing/stopped.";
+            let texts = vec![
+                "<Space>: Toggle the music playgin/stopped",
+                "'F': Choose the music file",
+                "'q': Quit",
+            ];
 
-            self.window.mvaddstr(height / 2, (width - text.len() as i32) / 2, text);
+            texts.iter().enumerate().for_each(|(i, t)| {
+                self.window.mvaddstr((height - texts.len() as i32) / 2 + i as i32, (width - t.len() as i32) / 2, t);
+            });
             self.window.refresh();
 
             while let Some(input) = self.window.getch() {
@@ -52,7 +58,9 @@ impl Window {
                         self.window.mv(0, 0);
                         self.window.clrtoeol();
                         let path = FileExplorer::new(&self.window).get_file();
-                        self.window.mvaddstr(0, 0, path.to_string_lossy());
+                        if path.exists() {
+                            self.set_music(Rc::new(Music::from_file(&path)));
+                        }
                     }
                     _ => {}
                 }
