@@ -25,9 +25,16 @@ impl FileExplorer {
         self.files_pane.refresh();
 
         let mut buffer = String::new();
+        let mut result = Path::new(".");
         loop {
             match self.input_line.getch().unwrap() {
-                Input::Character('\n') => break,
+                Input::Character('\n') => {
+                    let target = Path::new(&buffer);
+                    if target.is_file() {
+                        result = target;
+                    }
+                    break;
+                },
                 Input::Character(c) => {
                     if c.is_control() {
                         match c as u8 {
@@ -49,8 +56,42 @@ impl FileExplorer {
                 }
                 _ => {}
             }
+
+            self.files_pane.clear();
+            let target = Path::new(&buffer);
+            if let Some(parent) = target.parent() {
+                if let Ok(dir) = parent.read_dir() {
+                    dir.filter_map(|entry| entry.ok())
+                        .map(|entry| entry.path())
+                        .filter(|path| path.to_string_lossy().starts_with(&buffer))
+                        .for_each(|path| {
+                            if path.is_dir() {
+                                self.files_pane.addstr(format!("{}/\n", path.display()));
+                            } else {
+                                self.files_pane.addstr(format!("{}\n", path.display()));
+                            }
+                        });
+                }
+            }
+            if let Ok(dir) = target.read_dir() {
+                dir.filter_map(|entry| entry.ok())
+                    .map(|entry| entry.path())
+                    .for_each(|path| {
+                        if path.is_dir() {
+                            self.files_pane.addstr(format!("{}/\n", path.display()));
+                        } else {
+                            self.files_pane.addstr(format!("{}\n", path.display()));
+                        }
+                    });
+            }
+            self.files_pane.refresh();
+            self.input_line.mv(0, self.input_line.get_cur_x());
         }
 
-        Path::new(&buffer).to_path_buf()
+        self.input_line.clear();
+        self.input_line.refresh();
+        self.files_pane.clear();
+        self.files_pane.refresh();
+        result.to_path_buf()
     }
 }
