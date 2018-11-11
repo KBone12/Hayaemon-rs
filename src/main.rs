@@ -6,6 +6,7 @@ use std::time::Duration;
 mod bass;
 use bass::{Bass, Mode};
 use bass::device::Device;
+use bass::effect::Tempo;
 use bass::music::Music;
 
 fn main() {
@@ -26,8 +27,10 @@ fn main() {
     io::stdout().flush().ok();
     tmp.clear();
     io::stdin().read_line(&mut tmp).ok();
-    let music = Music::from_file(Path::new(&tmp.trim()));
+    let mut music = Music::from_file(Path::new(&tmp.trim()));
+    let tempo = Tempo::new(1000.0); // speed x10
 
+    music.apply_effect(&tempo);
     music.play();
     while music.is_active() {
         thread::sleep(Duration::from_millis(10));
