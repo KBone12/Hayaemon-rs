@@ -3,6 +3,7 @@ use std::ptr;
 
 pub mod device;
 use self::device::Device;
+pub mod effect;
 pub mod music;
 
 mod error;

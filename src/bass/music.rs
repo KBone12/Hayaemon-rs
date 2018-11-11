@@ -30,6 +30,10 @@ impl Music {
         unsafe { BASS_ChannelPlay(self.handle, false); }
     }
 
+    pub fn apply_effect(&mut self, effect: &Effect) {
+        effect.apply(&mut self);
+    }
+
     pub fn is_active(&self) -> bool {
         unsafe { BASS_ChannelIsActive(self.handle) != 0 }
     }
