@@ -32,7 +32,7 @@ impl Window {
         while !should_close {
             let (height, width) = self.window.get_max_yx();
             let texts = vec![
-                "<Space>: Toggle the music playgin/stopped",
+                "<Space>: Toggle the music playing/stopped",
                 "'F': Choose the music file",
                 "'q': Quit",
             ];
