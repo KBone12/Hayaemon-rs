@@ -38,7 +38,7 @@ impl Pane for PlaylistPane {
         window.get_handle().mvaddstr(1, (width - 17) / 2, "E: Effect setting");
     }
 
-    fn input(&mut self, window: &mut Window, input: &Input) {
+    fn input(&mut self, _window: &mut Window, input: &Input) {
         if input == &Input::Character('E') {
             self.next = PaneType::Effect;
         }

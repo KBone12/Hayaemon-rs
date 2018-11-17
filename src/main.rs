@@ -1,13 +1,10 @@
 extern crate pancurses;
 
-use std::cell::RefCell;
 use std::io::{self, Write};
 
 mod bass;
 use bass::{Bass, Mode};
 use bass::device::Device;
-use bass::effect::Tempo;
-use bass::music::Music;
 mod curses;
 use curses::window::Window;
 
