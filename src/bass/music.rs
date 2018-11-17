@@ -32,7 +32,17 @@ impl Music {
         #[cfg(windows)] let mut path = Path::new(path).as_os_str().encode_wide().collect::<Vec<_>>();
         #[cfg(unix)] let mut path = Path::new(path).as_os_str().as_bytes().to_vec();
         path.push(0);   // Add '\0' to the last
-        let stream_handle = unsafe { BASS_StreamCreateFile(false, path.as_mut_slice().as_mut_ptr() as *mut c_void, 0, 0, 0x200000) };   // Decoded stream
+        let stream_handle = unsafe {
+            // 0x200000: Decoded stream
+            // 0x80000000: The file's name is UTF-16 encoding (Windows wide char)
+            if cfg!(target_os = "windows") {
+                BASS_StreamCreateFile(false, path.as_mut_slice().as_mut_ptr() as *mut c_void, 0, 0,
+                    0x200000 | 0x80000000)
+            } else {
+                BASS_StreamCreateFile(false, path.as_mut_slice().as_mut_ptr() as *mut c_void, 0, 0,
+                    0x200000)
+            }
+        };
         Self {
             handle: stream_handle
         }
