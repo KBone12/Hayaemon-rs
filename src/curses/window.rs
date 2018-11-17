@@ -1,10 +1,10 @@
-use std::cell::{Ref, RefCell};
+use std::cell::{Ref, RefCell, RefMut};
 use std::collections::HashMap;
 use std::rc::Rc;
 
 use pancurses::{self, Input};
 
-use bass::effect::Tempo;
+use bass::effect::{EffectType, Tempo};
 use bass::music::{Music, State};
 use curses::file_explorer::FileExplorer;
 use curses::pane::{EffectPane, Pane, PaneType, PlaylistPane};
@@ -77,7 +77,7 @@ impl Window {
                     },
                     _ => {
                         if let Some(ref mut pane) = panes.get_mut(&self.current_pane) {
-                            pane.input(&self.window, &input);
+                            pane.input(self, &input);
                         }
                     }
                 }
@@ -98,7 +98,8 @@ impl Window {
     }
 
     pub fn set_music(&mut self, music: Rc<RefCell<Music>>) {
-        music.borrow_mut().apply_effect(&Tempo::new(1.0));      // Set speed x1.0
+        music.borrow_mut().enable_effect(EffectType::Tempo);
+        music.borrow().apply_effect(&Tempo::new(0.0));      // Set speed x1.0
         self.music = Some(music);
     }
 }

@@ -3,7 +3,7 @@ use std::os::raw::c_void;
 #[cfg(windows)] use std::os::windows::ffi::OsStrExt;
 use std::path::Path;
 
-use bass::effect::Effect;
+use bass::effect::{Effect, EffectType};
 
 #[link(name = "bass")]
 extern "C" {
@@ -60,12 +60,20 @@ impl Music {
         }
     }
 
-    pub fn apply_effect(&mut self, effect: &Effect) {
+    pub fn enable_effect(&mut self, effect_type: EffectType) {
+        effect_type.enable(self);
+    }
+
+    pub fn apply_effect(&self, effect: &Effect) {
         effect.apply(self);
     }
 
-    pub fn handle(&mut self) -> &mut u32 {
-        &mut self.handle
+    pub fn get_handle(&self) -> u32 {
+        self.handle
+    }
+
+    pub fn set_handle(&mut self, handle: u32) {
+        self.handle = handle;
     }
 }
 
