@@ -5,7 +5,7 @@ use std::rc::Rc;
 use pancurses::{self, Input};
 
 use bass::effect::{EffectType, Tempo};
-use bass::music::{Music, State};
+use bass::music::{Music, PlayingState};
 use curses::file_explorer::FileExplorer;
 use curses::pane::{EffectPane, Pane, PaneType, PlaylistPane};
 
@@ -60,7 +60,7 @@ impl Window {
                     Input::Character('q') => should_close = true,
                     Input::Character(' ') => {
                         if let Some(ref music) = self.music {
-                            if music.borrow().get_state() == State::Playing {
+                            if music.borrow().get_state() == PlayingState::Playing {
                                 music.borrow().pause();
                             } else {
                                 music.borrow().play(true);

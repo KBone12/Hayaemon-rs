@@ -1,7 +1,7 @@
 use pancurses::Input;
 
 use bass::effect::Tempo;
-use bass::music::State;
+use bass::music::PlayingState;
 use curses::window::Window;
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
@@ -32,7 +32,7 @@ impl Pane for PlaylistPane {
     fn draw(&self, window: &Window) {
         let (_, width) = window.get_handle().get_max_yx();
         if let Some(music) = window.get_music() {
-            let text = format!("{}", if music.get_state() == State::Playing { "Playing!" } else { "Not playing" });
+            let text = format!("{}", if music.get_state() == PlayingState::Playing { "Playing!" } else { "Not playing" });
             window.get_handle().mvaddstr(0, (width - text.len() as i32) / 2, text);
         }
         window.get_handle().mvaddstr(1, (width - 17) / 2, "E: Effect setting");

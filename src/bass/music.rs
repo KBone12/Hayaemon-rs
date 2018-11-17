@@ -16,7 +16,7 @@ extern "C" {
 }
 
 #[derive(PartialEq)]
-pub enum State {
+pub enum PlayingState {
     Stopped,
     Playing,
     Stalled,
@@ -50,12 +50,12 @@ impl Music {
         unsafe { BASS_ChannelStop(self.handle); }
     }
 
-    pub fn get_state(&self) -> State {
+    pub fn get_state(&self) -> PlayingState {
         match unsafe { BASS_ChannelIsActive(self.handle) } {
-            0 => State::Stopped,
-            1 => State::Playing,
-            2 => State::Stalled,
-            3 => State::Paused,
+            0 => PlayingState::Stopped,
+            1 => PlayingState::Playing,
+            2 => PlayingState::Stalled,
+            3 => PlayingState::Paused,
             _ => unreachable!(),
         }
     }
@@ -79,7 +79,7 @@ impl Music {
 
 impl Drop for Music {
     fn drop(&mut self) {
-        if self.get_state() == State::Playing || self.get_state() == State::Paused { self.stop(); }
+        if self.get_state() == PlayingState::Playing || self.get_state() == PlayingState::Paused { self.stop(); }
         unsafe { BASS_StreamFree(self.handle); }
     }
 }
