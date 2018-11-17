@@ -11,7 +11,6 @@ use curses::pane::{EffectPane, Pane, PaneType, PlaylistPane};
 
 pub struct Window {
     window: pancurses::Window,
-    panes: HashMap<PaneType, Box<Pane>>,
     current_pane: PaneType,
     music: Option<Rc<RefCell<Music>>>,
 }
@@ -25,19 +24,18 @@ impl Window {
         pancurses::curs_set(0);
         pancurses::noecho();
 
-        let mut panes = HashMap::new();
-        panes.insert(PaneType::Play, Box::new(PlaylistPane::new()) as Box<Pane>);
-        panes.insert(PaneType::Effect, Box::new(EffectPane::new()) as Box<Pane>);
-
         Self {
             window,
-            panes,
             current_pane: PaneType::Play,
             music: None,
         }
     }
 
     pub fn show(&mut self) {
+        let mut panes = HashMap::new();
+        panes.insert(PaneType::Play, Box::new(PlaylistPane::new()) as Box<Pane>);
+        panes.insert(PaneType::Effect, Box::new(EffectPane::new()) as Box<Pane>);
+
         let mut should_close = false;
         while !should_close {
             self.window.clear();
@@ -51,7 +49,7 @@ impl Window {
             texts.iter().enumerate().for_each(|(i, t)| {
                 self.window.mvaddstr(height - (texts.len() - i) as i32, (width - t.len() as i32) / 2, t);
             });
-            if let Some(ref pane) = self.panes.get(&self.current_pane) {
+            if let Some(ref pane) = panes.get(&self.current_pane) {
                 pane.draw(&self);
             }
 
@@ -78,14 +76,14 @@ impl Window {
                         }
                     },
                     _ => {
-                        if let Some(ref mut pane) = self.panes.get_mut(&self.current_pane) {
+                        if let Some(ref mut pane) = panes.get_mut(&self.current_pane) {
                             pane.input(&self.window, &input);
                         }
                     }
                 }
             }
 
-            if let Some(ref pane) = self.panes.get(&self.current_pane) {
+            if let Some(ref mut pane) = panes.get_mut(&self.current_pane) {
                 self.current_pane = pane.next();
             }
         }
@@ -96,11 +94,7 @@ impl Window {
     }
 
     pub fn get_music(&self) -> Option<Ref<Music>> {
-        if let Some(ref music) = self.music {
-            Some(music.borrow())
-        } else {
-            None
-        }
+        self.music.as_ref().map(|music| music.borrow())
     }
 
     pub fn set_music(&mut self, music: Rc<RefCell<Music>>) {
