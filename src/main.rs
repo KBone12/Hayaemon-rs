@@ -1,5 +1,6 @@
 extern crate pancurses;
 
+use std::cell::RefCell;
 use std::io::{self, Write};
 use std::path::Path;
 use std::rc::Rc;
@@ -7,6 +8,7 @@ use std::rc::Rc;
 mod bass;
 use bass::{Bass, Mode};
 use bass::device::Device;
+use bass::effect::Tempo;
 use bass::music::Music;
 mod window;
 use window::Window;
@@ -29,7 +31,9 @@ fn main() {
     io::stdout().flush().ok();
     tmp.clear();
     io::stdin().read_line(&mut tmp).ok();
-    let music = Rc::new(Music::from_file(Path::new(&tmp.trim())));
+    let music = Rc::new(RefCell::new(Music::from_file(Path::new(&tmp.trim()))));
+    let tempo = Tempo::new(1000.0); // speed x10
+    music.borrow_mut().apply_effect(&tempo);
 
     let mut window = Window::new();
     window.set_music(music);

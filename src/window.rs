@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::rc::Rc;
 
 use pancurses::{self, Input};
@@ -6,7 +7,7 @@ use bass::music::{Music, State};
 
 pub struct Window {
     window: pancurses::Window,
-    music: Option<Rc<Music>>,
+    music: Option<Rc<RefCell<Music>>>,
 }
 
 impl Window {
@@ -40,10 +41,10 @@ impl Window {
                     Input::Character('q') => should_close = true,
                     Input::Character(' ') => {
                         if let Some(ref music) = self.music {
-                            if music.get_state() == State::Playing {
-                                music.pause();
+                            if music.borrow().get_state() == State::Playing {
+                                music.borrow().pause();
                             } else {
-                                music.play(true);
+                                music.borrow().play(true);
                             }
                         }
                     },
@@ -53,7 +54,7 @@ impl Window {
         }
     }
 
-    pub fn set_music(&mut self, music: Rc<Music>) {
+    pub fn set_music(&mut self, music: Rc<RefCell<Music>>) {
         self.music = Some(music);
     }
 }
