@@ -23,8 +23,6 @@ impl Window {
         pancurses::curs_set(0);
         pancurses::noecho();
 
-        window.nodelay(true);
-
         let mut panes = HashMap::new();
         panes.insert(PaneType::Play, Box::new(PlaylistPane::new()) as Box<Pane>);
         panes.insert(PaneType::Effect, Box::new(EffectPane::new()) as Box<Pane>);
@@ -57,7 +55,7 @@ impl Window {
 
             self.window.refresh();
 
-            while let Some(input) = self.window.getch() {
+            if let Some(input) = self.window.getch() {
                 match input {
                     Input::Character('q') => should_close = true,
                     Input::Character(' ') => {
