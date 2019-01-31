@@ -1,6 +1,6 @@
 [package]
 name = "hayaemon"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["kbone <kbonehobby@gmail.com>"]
 build = "build.rs"
 
